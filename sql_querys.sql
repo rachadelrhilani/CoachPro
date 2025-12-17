@@ -92,9 +92,22 @@ CREATE TABLE reservation (
 ('Musculation'),
 ('Cardio'),
 ('Yoga'); */
-INSERT INTO certification (nom, organisme) VALUES
+/* INSERT INTO certification (nom, organisme) VALUES
 ('CrossFit Level 1', 'CrossFit Inc'),
 ('IFBB Trainer', 'IFBB'),
-('Yoga Alliance RYT 200', 'Yoga Alliance');
+('Yoga Alliance RYT 200', 'Yoga Alliance'); */
+-- Exemple : Ajouter des disponibilités pour les coaches existants
+INSERT INTO disponibilite (date, heure_debut, heure_fin, statut, id_coach) VALUES
+('2025-12-20', '09:00:00', '10:00:00', 'Disponible', 1),
+('2025-12-20', '10:30:00', '11:30:00', 'Disponible', 1),
+('2025-12-21', '14:00:00', '15:00:00', 'Disponible', 2),
+('2025-12-21', '15:30:00', '16:30:00', 'Disponible', 2);
+
+-- Exemple : Ajouter des réservations pour des sportifs existants
+INSERT INTO reservation (date_reservation, statut, id_sportif, id_coach, id_disponibilite) VALUES
+(NOW(), 'Confirmée', 1, 1, 1),
+(NOW(), 'En attente', 2, 1, 2),
+(NOW(), 'Confirmée', 1, 2, 3),
+(NOW(), 'Annulée', 3, 2, 4);
 
 

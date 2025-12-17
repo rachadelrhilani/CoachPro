@@ -63,8 +63,8 @@
     <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
       <img src="https://ui-avatars.com/api/?name=Sportif&background=6366f1&color=fff" class="w-10 h-10 rounded-xl">
       <div class="flex-1">
-        <p class="text-sm font-bold text-slate-800">Sportif Actif</p>
-        <p class="text-[10px] uppercase font-bold text-indigo-500">SPORTIF</p>
+         <p class="text-sm font-bold text-slate-800"><?= $fullName ?></p>
+        <p class="text-[10px] uppercase font-bold text-indigo-500"><?= $roleName ?></p>
       </div>
     </div>
   </div>

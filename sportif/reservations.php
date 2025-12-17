@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Reservation</title>
 </head>
 <body>
-    <?php include '../Components/aside_sportif.php'; ?>
+    <div class="flex min-h-screen">
+     <?php include '../Components/aside_sportif.php'; ?>
+    </div>
     <script src="https://cdn.tailwindcss.com"></script>
 </body>
 </html>
