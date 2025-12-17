@@ -7,7 +7,7 @@ if (!isset($_SESSION['id_personne']) || $_SESSION['role'] !== 'sportif') {
     exit;
 }
 
-// Récupérer id_personne et id_sportif
+// recupere id_personne et id_sportif
 $id_personne = $_SESSION['id_personne'];
 $stmtSportif = $conn->prepare("SELECT id_sportif FROM sportif WHERE id_personne = ?");
 $stmtSportif->bind_param("i", $id_personne);
@@ -28,7 +28,7 @@ $resultCheck = $stmtCheck->get_result();
 $reservation = $resultCheck->fetch_assoc();
 if (!$reservation) die("Réservation introuvable");
 
-// Annuler la réservation (on peut soit supprimer soit mettre le statut "annulé")
+/* mise à jour pour annuler */
 $stmtCancel = $conn->prepare("UPDATE reservation SET statut = 'annule' WHERE id_reservation = ?");
 $stmtCancel->bind_param("i", $id_reservation);
 $stmtCancel->execute();
