@@ -1,6 +1,6 @@
 /* CREATE DATABASE coachpro; */
 USE coachpro;
-CREATE TABLE role (
+/* CREATE TABLE role (
     id_role INT AUTO_INCREMENT PRIMARY KEY,
     nom_role VARCHAR(50) NOT NULL UNIQUE
 );
@@ -84,4 +84,17 @@ CREATE TABLE reservation (
         FOREIGN KEY (id_coach) REFERENCES coach(id_coach),
     CONSTRAINT fk_res_disponibilite
         FOREIGN KEY (id_disponibilite) REFERENCES disponibilite(id_disponibilite)
-);
+); */
+/* INSERT INTO role (nom_role) VALUES 
+('sportif'),
+('coach'); */
+/* INSERT INTO discipline (nom) VALUES
+('Musculation'),
+('Cardio'),
+('Yoga'); */
+INSERT INTO certification (nom, organisme) VALUES
+('CrossFit Level 1', 'CrossFit Inc'),
+('IFBB Trainer', 'IFBB'),
+('Yoga Alliance RYT 200', 'Yoga Alliance');
+
+
