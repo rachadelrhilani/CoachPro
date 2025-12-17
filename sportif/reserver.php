@@ -25,11 +25,11 @@ $user = $result->fetch_assoc();
 $fullName = htmlspecialchars($user['nom'] . ' ' . $user['prenom']);
 $roleName = htmlspecialchars(strtoupper($user['nom_role']));
 
-// Traitement de la réservation
+// la réservation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_disponibilite'])) {
     $id_disponibilite = intval($_POST['id_disponibilite']);
 
-    // Récupérer l'id_coach de la disponibilité
+    // recuperer l'id_coach de la disponibilité
     $stmtDisponibilite = $conn->prepare("SELECT id_coach, date, heure_debut FROM disponibilite WHERE id_disponibilite = ?");
     $stmtDisponibilite->bind_param("i", $id_disponibilite);
     $stmtDisponibilite->execute();
@@ -76,7 +76,7 @@ $query = "
 $params = [];
 $types = '';
 
-// Filtre discipline
+// filtre discipline
 if ($filter_discipline) {
     $query .= " AND c.id_coach IN (
         SELECT cd2.id_coach 
@@ -88,7 +88,7 @@ if ($filter_discipline) {
     $types .= 's';
 }
 
-// Filtre date
+// filtre date
 if ($filter_date) {
     $query .= " AND d.date = ? ";
     $params[] = $filter_date;
