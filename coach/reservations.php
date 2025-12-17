@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>listes des demandes</title>
 </head>
 <body>
-    
+    <?php include '../Components/aside_coach.php'; ?>
+    <script src="https://cdn.tailwindcss.com"></script>
 </body>
 </html>

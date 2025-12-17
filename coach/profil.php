@@ -6,6 +6,7 @@
     <title>Profile</title>
 </head>
 <body>
-    
+    <?php include '../Components/aside_coach.php'; ?>
+    <script src="https://cdn.tailwindcss.com"></script>
 </body>
 </html>
