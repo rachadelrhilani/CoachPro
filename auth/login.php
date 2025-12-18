@@ -47,53 +47,67 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login</title>
+    <title>Connexion CoachPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body style="background-image: url('../images/sportback.jpg');">
-    <div class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
-            <h2 class="text-3xl font-bold text-slate-800 mb-6 text-center">Connexion</h2>
-            
+<body class="bg-gray-100">
+
+    <!-- Container principal centré -->
+    <div class="min-h-screen flex items-center justify-center relative overflow-hidden">
+
+        <!-- Image de fond avec overlay sombre -->
+        <div class="absolute inset-0">
+            <img src="../images/sportback.jpg" alt="Background" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/50"></div>
+        </div>
+
+        <!-- Card de login centrée -->
+        <div class="relative z-10 w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 md:p-10">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-extrabold text-gray-900 uppercase tracking-wide">CoachPro</h1>
+                <p class="mt-2 text-gray-500">Connectez-vous pour accéder à votre espace</p>
+            </div>
+
+            <!-- Affichage des erreurs -->
             <?php if ($error): ?>
-                <div class="mb-4 bg-red-100 text-red-700 px-4 py-3 rounded-lg text-sm">
+                <div class="mb-6 bg-red-100 text-red-700 px-4 py-3 rounded-lg text-sm">
                     <?= htmlspecialchars($error) ?>
                 </div>
             <?php endif; ?>
-            <form method="POST" class="space-y-4">
+
+            <!-- Formulaire -->
+            <form method="POST" class="space-y-6">
                 <div>
-                    <label class="block text-sm font-medium text-slate-700">Email</label>
-                    <input
-                        type="email"
-                        name="email"
-                        required
-                        class="w-full mt-1 p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" name="email" required placeholder="exemple@email.com"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-slate-700">Mot de passe</label>
-                    <input
-                        type="password"
-                        name="password"
-                        required
-                        class="w-full mt-1 p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+                    <input type="password" name="password" required placeholder="********"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
                 </div>
 
-                <button
-                    type="submit"
-                    class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
+                <button type="submit"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg shadow-lg transition">
                     Se connecter
                 </button>
             </form>
 
-            <p class="mt-6 text-center text-slate-600">Nouveau ici ? <a href="register.php" class="text-indigo-600 font-medium">Créer un compte</a></p>
+            <p class="mt-6 text-center text-gray-500 text-sm">
+                Nouveau ici ? 
+                <a href="register.php" class="text-indigo-600 font-medium hover:underline">Créer un compte</a>
+            </p>
         </div>
     </div>
-    <script src="https://cdn.tailwindcss.com"></script>
+
 </body>
+
 </html>
