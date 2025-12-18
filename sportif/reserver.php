@@ -63,7 +63,7 @@ $disciplines = $conn->query("SELECT * FROM discipline")->fetch_all(MYSQLI_ASSOC)
 
 // Récupérer la liste des coachs et leurs disponibilités
 $query = "
-    SELECT d.id_disponibilite, d.date, d.heure_debut, d.heure_fin, c.id_coach, 
+    SELECT d.id_disponibilite, d.date, d.heure_debut, d.heure_fin, c.id_coach, c.photo as photo,
            p.nom, p.prenom, GROUP_CONCAT(dist.nom) as disciplines
     FROM disponibilite d
     JOIN coach c ON d.id_coach = c.id_coach
@@ -143,6 +143,7 @@ $disponibilites = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             <?php if ($disponibilites): ?>
                 <?php foreach ($disponibilites as $dispo): ?>
                     <div class="bg-white p-4 rounded-2xl shadow-md">
+                        <img src="<?php $dispo['photo'] ?>" alt="photo-coach">
                         <h2 class="font-bold text-lg mb-2"><?= htmlspecialchars($dispo['nom'] . ' ' . $dispo['prenom']) ?></h2>
                         <p class="text-sm text-gray-500 mb-1">Disciplines : <?= htmlspecialchars($dispo['disciplines']) ?></p>
                         <p class="text-sm text-gray-500 mb-2">Date : <?= date('d/m/Y', strtotime($dispo['date'])) ?></p>
