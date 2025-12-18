@@ -139,7 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
  <div 
-    class="absolute inset-0 bg-cover bg-center scale-110 blur-xl"
+    class="absolute inset-0 bg-cover bg-center scale-110 blur-sm"
     style="background-image: url('../images/sportback.jpg');">
   </div>
 <div class="absolute inset-0 bg-black/60"></div>

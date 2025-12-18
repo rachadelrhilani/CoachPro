@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Dashboard Coach</title>
 </head>
 <body>
 <div class="min-h-screen bg-slate-50 flex">

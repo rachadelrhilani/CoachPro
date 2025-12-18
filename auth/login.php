@@ -55,11 +55,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <title>login</title>
 </head>
 
-<body>
+<body style="background-image: url('../images/sportback.jpg');">
     <div class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
         <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
             <h2 class="text-3xl font-bold text-slate-800 mb-6 text-center">Connexion</h2>
-            <!-- MESSAGE ERREUR -->
+            
             <?php if ($error): ?>
                 <div class="mb-4 bg-red-100 text-red-700 px-4 py-3 rounded-lg text-sm">
                     <?= htmlspecialchars($error) ?>

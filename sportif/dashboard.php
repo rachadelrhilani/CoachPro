@@ -22,13 +22,13 @@ if ($resultSportif->num_rows === 0) {
 
 $id_sportif = $resultSportif->fetch_assoc()['id_sportif'];
 
-// Nombre total de réservations
+// nombre total de reservations
 $stmtTotal = $conn->prepare("SELECT COUNT(*) AS total_reservations FROM reservation WHERE id_sportif = ?");
 $stmtTotal->bind_param("i", $id_sportif);
 $stmtTotal->execute();
 $totalReservations = $stmtTotal->get_result()->fetch_assoc()['total_reservations'];
 
-// Prochaine séance
+// prochaine séance
 $stmtNext = $conn->prepare("
     SELECT d.date, d.heure_debut AS heure, c.id_personne AS coach_id, p.nom, p.prenom
     FROM reservation r
