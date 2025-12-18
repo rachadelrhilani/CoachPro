@@ -110,7 +110,7 @@ $disponibilites = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Reserver</title>
 </head>
 <body>
     <div class="flex min-h-screen">
@@ -143,7 +143,7 @@ $disponibilites = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             <?php if ($disponibilites): ?>
                 <?php foreach ($disponibilites as $dispo): ?>
                     <div class="bg-white p-4 rounded-2xl shadow-md">
-                        <img src="<?php $dispo['photo'] ?>" alt="photo-coach">
+                        <img src="<?= htmlspecialchars($dispo['photo']) ?>" alt="photo-coach">
                         <h2 class="font-bold text-lg mb-2"><?= htmlspecialchars($dispo['nom'] . ' ' . $dispo['prenom']) ?></h2>
                         <p class="text-sm text-gray-500 mb-1">Disciplines : <?= htmlspecialchars($dispo['disciplines']) ?></p>
                         <p class="text-sm text-gray-500 mb-2">Date : <?= date('d/m/Y', strtotime($dispo['date'])) ?></p>
