@@ -1,3 +1,8 @@
+<?php
+session_start();
+require_once "../Connectdb/connect.php";
+
+?>
 <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-3 z-50 flex justify-between items-center">
   <a href="dashboard.php" class="text-indigo-600 flex flex-col items-center">
     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

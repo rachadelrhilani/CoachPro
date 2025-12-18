@@ -2,7 +2,7 @@
 session_start();
 require_once "../Connectdb/connect.php";
 
-// Vérifier que l'utilisateur est connecté et a le rôle "sportif"
+// verifier que l'utilisateur est connecte et a le role "sportif"
 if (!isset($_SESSION['id_personne']) || $_SESSION['role'] !== 'sportif') {
     header("Location: ../auth/login.php");
     exit;
@@ -10,7 +10,7 @@ if (!isset($_SESSION['id_personne']) || $_SESSION['role'] !== 'sportif') {
 
 $id_personne = $_SESSION['id_personne'];
 
-// Récupérer l'id_sportif correspondant
+// recuperer l'id_sportif correspondant
 $stmtSportif = $conn->prepare("SELECT id_sportif FROM sportif WHERE id_personne = ?");
 $stmtSportif->bind_param("i", $id_personne);
 $stmtSportif->execute();
@@ -23,12 +23,12 @@ if ($resultSportif->num_rows === 0) {
 $id_sportif = $resultSportif->fetch_assoc()['id_sportif'];
 
 // nombre total de reservations
-$stmtTotal = $conn->prepare("SELECT COUNT(*) AS total_reservations FROM reservation WHERE id_sportif = ?");
+$stmtTotal = $conn->prepare("SELECT COUNT(*) AS total_reservations FROM reservation WHERE id_sportif = ? AND (statut='en_attente' OR statut='confirmée')");
 $stmtTotal->bind_param("i", $id_sportif);
 $stmtTotal->execute();
 $totalReservations = $stmtTotal->get_result()->fetch_assoc()['total_reservations'];
 
-// prochaine séance
+// prochaine seance
 $stmtNext = $conn->prepare("
     SELECT d.date, d.heure_debut AS heure, c.id_personne AS coach_id, p.nom, p.prenom
     FROM reservation r
@@ -43,7 +43,7 @@ $stmtNext->bind_param("i", $id_sportif);
 $stmtNext->execute();
 $nextSession = $stmtNext->get_result()->fetch_assoc();
 
-// Réservations récentes
+// Reservations recentes
 $stmtRecent = $conn->prepare("
     SELECT d.date, d.heure_debut AS heure, c.id_personne AS coach_id, p.nom, p.prenom, r.statut
     FROM reservation r
@@ -87,10 +87,10 @@ $roleName = htmlspecialchars(strtoupper($user['nom_role']));
     <?php include '../Components/aside_sportif.php'; ?>
     <main class="flex-1 lg:ml-72 p-6 md:p-10 pb-24 lg:pb-10 transition-all">
 
-        <!-- Message de bienvenue -->
+        
         <h1 class="text-3xl font-bold mb-6">Bienvenue sur votre dashboard</h1>
 
-        <!-- Statistiques -->
+        
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div class="bg-white p-6 rounded-2xl shadow-md">
                 <h2 class="text-xl font-semibold mb-2">Nombre total de réservations</h2>
@@ -112,7 +112,7 @@ $roleName = htmlspecialchars(strtoupper($user['nom_role']));
         </div>
 
 
-        <!-- Réservations récentes -->
+        
         <div class="bg-white p-6 rounded-2xl shadow-md">
             <h2 class="text-xl font-semibold mb-4">Réservations récentes</h2>
             <table class="w-full text-left border-collapse">
@@ -139,6 +139,5 @@ $roleName = htmlspecialchars(strtoupper($user['nom_role']));
 
     </main>
 </div>
-
 </body>
 </html>
