@@ -60,14 +60,27 @@
   </nav>
 
   <div class="p-4 mt-auto border-t border-slate-100">
-    <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
-      <img src="https://ui-avatars.com/api/?name=Sportif&background=6366f1&color=fff" class="w-10 h-10 rounded-xl">
-      <div class="flex-1">
-         <p class="text-sm font-bold text-slate-800"><?= $fullName ?></p>
-        <p class="text-[10px] uppercase font-bold text-indigo-500"><?= $roleName ?></p>
-      </div>
+  <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
+    
+    <img src="https://ui-avatars.com/api/?name=Sportif&background=6366f1&color=fff" class="w-10 h-10 rounded-xl">
+
+    <div class="flex-1">
+      <p class="text-sm font-bold text-slate-800"><?= htmlspecialchars($fullName) ?></p>
+      <p class="text-[10px] uppercase font-bold text-indigo-500"><?= htmlspecialchars($roleName) ?></p>
     </div>
+
+    <!-- Logout -->
+    <a href="logout.php" class="text-slate-400 hover:text-red-500 transition" title="Se déconnecter">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+           viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+      </svg>
+    </a>
+
   </div>
+</div>
+
 </aside>
 <script>
 const currentPage = window.location.pathname.split('/').pop();

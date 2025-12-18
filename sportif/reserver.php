@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_disponibilite'])) 
     // Insérer la réservation
     $stmtRes = $conn->prepare("
         INSERT INTO reservation (date_reservation, statut, id_sportif, id_coach, id_disponibilite)
-        VALUES (?, 'confirmée', ?, ?, ?)
+        VALUES (?, 'en_attente', ?, ?, ?)
     ");
 
     // Récupérer id_sportif
