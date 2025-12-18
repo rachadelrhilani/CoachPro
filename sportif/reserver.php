@@ -70,7 +70,7 @@ $query = "
     JOIN personne p ON c.id_personne = p.id_personne
     LEFT JOIN coach_discipline cd ON c.id_coach = cd.id_coach
     LEFT JOIN discipline dist ON cd.id_discipline = dist.id_discipline
-    WHERE 1=1
+    WHERE d.statut = 'disponible'
 ";
 
 $params = [];

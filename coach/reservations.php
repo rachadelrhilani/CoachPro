@@ -7,13 +7,13 @@ if (!isset($_SESSION['id_personne']) || $_SESSION['role'] !== 'coach') {
 }
 
 $id_personne = $_SESSION['id_personne'];
-// Récupérer id_coach à partir de id_personne
+// recuperer id coach d'apres idpersonne
 $stmtCoach = $conn->prepare("SELECT id_coach FROM coach WHERE id_personne = ?");
 $stmtCoach->bind_param("i", $id_personne);
 $stmtCoach->execute();
 $id_coach = $stmtCoach->get_result()->fetch_assoc()['id_coach'];
 
-// Traitement actions
+// traitement actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_reservation = intval($_POST['id_reservation']);
     $action = $_POST['action'];
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statut_dispo = 'disponible';
     }
 
-    // Mettre à jour la réservation
+    // mettre à jour la réservation
     $stmt = $conn->prepare("
         UPDATE reservation 
         SET statut = ?
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("si", $statut_res, $id_reservation);
     $stmt->execute();
 
-    // Mettre à jour la disponibilité liée
+    // mettre à jour la disponibilite lie
     $stmt = $conn->prepare("
         UPDATE disponibilite 
         SET statut = ?
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
 }
 
-// Récupérer les demandes du coach
+// récupérer les demandes du coach
 $stmt = $conn->prepare("
     SELECT r.id_reservation, r.statut,
            d.date, d.heure_debut, d.heure_fin,
