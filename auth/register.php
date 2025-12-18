@@ -137,6 +137,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <body class="min-h-screen relative flex items-center justify-center p-6 overflow-hidden">
 
+<div id="notification-container" class="fixed top-5 right-5 space-y-2 z-50"></div>
+
 
  <div 
     class="absolute inset-0 bg-cover bg-center scale-110 blur-sm"
@@ -233,9 +235,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   background: #c7d2fe;
   border-radius: 10px;
 }
-</style>
-<!-- STYLE INPUT -->
-<style>
+
   .input {
     width: 100%;
     padding: 14px;
@@ -262,6 +262,69 @@ function toggleFields() {
 
 roleRadios.forEach(r => r.addEventListener('change', toggleFields));
 toggleFields();
+const form = document.querySelector('form');
+const notifContainer = document.getElementById('notification-container');
+
+function showNotification(message, type = 'error') {
+  const colors = {
+    error: 'bg-red-500 text-white',
+    success: 'bg-green-500 text-white'
+  };
+  
+  const notif = document.createElement('div');
+  notif.className = `px-4 py-3 rounded-lg shadow-md ${colors[type]} animate-slide-in`;
+  notif.innerText = message;
+  
+  notifContainer.appendChild(notif);
+
+  
+  setTimeout(() => {
+    notif.classList.add('animate-slide-out');
+    notif.addEventListener('animationend', () => notif.remove());
+  }, 4000);
+}
+
+
+const style = document.createElement('style');
+style.innerHTML = `
+@keyframes slide-in { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slide-out { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(100%); } }
+.animate-slide-in { animation: slide-in 0.5s forwards; }
+.animate-slide-out { animation: slide-out 0.5s forwards; }
+`;
+document.head.appendChild(style);
+
+form.addEventListener('submit', function(e) {
+  let errors = [];
+
+  const nom = form.nom.value.trim();
+  const prenom = form.prenom.value.trim();
+  const email = form.email.value.trim();
+  const telephone = form.telephone.value.trim();
+  const password = form.password.value;
+  const role = document.querySelector('input[name="role"]:checked').value;
+  const photo = form.photo?.value.trim();
+
+ 
+  const regexNom = /^[a-zA-ZÀ-ÿ' -]{2,30}$/;
+  const regexEmail = /^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,6}$/;
+  const regexTel = /^\+?\d{9,15}$/;
+  const regexPass = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*]{6,20}$/;
+  const regexURL = /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif))$/i;
+
+  if (!regexNom.test(nom)) errors.push("Nom invalide");
+  if (!regexNom.test(prenom)) errors.push("Prénom invalide");
+  if (!regexEmail.test(email)) errors.push("Email invalide");
+  if (telephone && !regexTel.test(telephone)) errors.push("Téléphone invalide");
+  if (!regexPass.test(password)) errors.push("Mot de passe invalide (au moins 6 caractères avec lettres et chiffres)");
+
+  if (role === 'coach' && photo && !regexURL.test(photo)) errors.push("URL de la photo invalide");
+
+  if (errors.length > 0) {
+    e.preventDefault();
+    errors.forEach(msg => showNotification(msg, 'error'));
+  }
+});
 </script>
 
 </body>

@@ -47,7 +47,7 @@ $stmtRes = $conn->prepare("
     JOIN disponibilite d ON r.id_disponibilite = d.id_disponibilite
     JOIN coach c ON r.id_coach = c.id_coach
     JOIN personne p ON c.id_personne = p.id_personne
-    WHERE r.id_sportif = ?
+    WHERE r.id_sportif = ? AND (r.statut ='en_attente' OR r.statut ='confirmée')
     ORDER BY d.date DESC, d.heure_debut DESC
 ");
 $stmtRes->bind_param("i", $id_sportif);
