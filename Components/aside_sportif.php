@@ -31,7 +31,7 @@
       <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
       </div>
-      <span class="text-xl font-black text-slate-800 tracking-tighter">SportifHub</span>
+      <span class="text-xl font-black text-slate-800 tracking-tighter">Sportif Hub</span>
     </div>
   </div>
 

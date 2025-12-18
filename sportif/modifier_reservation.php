@@ -68,7 +68,7 @@ $stmtDisp = $conn->prepare("
     FROM disponibilite d
     JOIN coach c ON d.id_coach = c.id_coach
     JOIN personne p ON c.id_personne = p.id_personne
-    WHERE d.statut = 'disponible'
+    WHERE d.statut = 'Disponible'
     ORDER BY d.date ASC, d.heure_debut ASC
 ");
 $stmtDisp->execute();

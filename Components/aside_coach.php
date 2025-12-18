@@ -1,7 +1,19 @@
 <?php
-session_start();
-require_once "../Connectdb/connect.php";
+/* les info de user */
+$stmt = $conn->prepare("
+    SELECT p.nom, p.prenom, r.nom_role 
+    FROM personne p
+    JOIN role r ON p.id_role = r.id_role
+    JOIN coach s ON s.id_personne = p.id_personne
+    WHERE p.id_personne = ?
+");
+$stmt->bind_param("i", $id_personne);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
 
+$fullName = htmlspecialchars($user['nom'] . ' ' . $user['prenom']);
+$roleName = htmlspecialchars(strtoupper($user['nom_role']));
 ?>
 <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-3 z-50 flex justify-between items-center">
   <a href="dashboard.php" class="text-indigo-600 flex flex-col items-center">
@@ -49,7 +61,7 @@ require_once "../Connectdb/connect.php";
           <path stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
       </div>
-      <span class="text-xl font-black text-slate-800 tracking-tighter">COACHHUB</span>
+      <span class="text-xl font-black text-slate-800 tracking-tighter">COACH HUB</span>
     </div>
   </div>
 
@@ -91,8 +103,8 @@ require_once "../Connectdb/connect.php";
     <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
       <img src="https://ui-avatars.com/api/?name=Coach&background=6366f1&color=fff" class="w-10 h-10 rounded-xl" alt="avatar">
       <div class="flex-1">
-        <p class="text-sm font-bold text-slate-800">Coach Professionnel</p>
-        <p class="text-[10px] uppercase font-bold text-indigo-500 tracking-tighter">COACH</p>
+        <p class="text-sm font-bold text-slate-800"><?= htmlspecialchars($fullName) ?></p>
+        <p class="text-[10px] uppercase font-bold text-indigo-500 tracking-tighter"><?= htmlspecialchars($roleName) ?></p>
       </div>
       <!-- Logout -->
       <a href="logout.php" class="text-slate-400 hover:text-red-500 transition" title="Se déconnecter">
