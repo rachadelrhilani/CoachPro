@@ -2,13 +2,13 @@
 session_start();
 require_once "../Connectdb/connect.php";
 
-// Vérifier que l'utilisateur est connecté et est un sportif
+// verfier que l'utilisateur est connecté et est un sportif
 if (!isset($_SESSION['id_personne']) || $_SESSION['role'] !== 'sportif') {
     header("Location: ../auth/login.php");
     exit;
 }
 
-// Récupérer id_personne 
+// recupere id_personne 
 $id_personne = $_SESSION['id_personne'];
 /* les info de user */
 $stmt = $conn->prepare("
@@ -25,7 +25,7 @@ $user = $result->fetch_assoc();
 
 $fullName = htmlspecialchars($user['nom'] . ' ' . $user['prenom']);
 $roleName = htmlspecialchars(strtoupper($user['nom_role']));
-/* Récupérer id_sportif */
+/* recuperer id_sportif */
 $stmtSportif = $conn->prepare("SELECT id_sportif FROM sportif WHERE id_personne = ?");
 $stmtSportif->bind_param("i", $id_personne);
 $stmtSportif->execute();
@@ -35,13 +35,13 @@ if ($resultSportif->num_rows === 0){
 } 
 $id_sportif = $resultSportif->fetch_assoc()['id_sportif'];
 
-// Récupérer l'id_reservation
+// recuperer l'id_reservation
 $id_reservation = $_GET['id'] ?? null;
 if (!$id_reservation) die("ID réservation manquant");
 
-// Vérifier que la réservation appartient au sportif et est en attente
+// verfier que la réservation appartient au sportif et est en attente
 $stmtCheck = $conn->prepare("
-    SELECT r.id_reservation, r.statut, d.id_disponibilite, d.date, d.heure_debut, d.heure_fin
+    SELECT r.id_reservation, r.statut, d.id_coach, d.id_disponibilite, d.date, d.heure_debut, d.heure_fin
     FROM reservation r
     JOIN disponibilite d ON r.id_disponibilite = d.id_disponibilite
     WHERE r.id_reservation = ? AND r.id_sportif = ? AND r.statut = 'en_attente'
@@ -50,9 +50,11 @@ $stmtCheck->bind_param("ii", $id_reservation, $id_sportif);
 $stmtCheck->execute();
 $resultCheck = $stmtCheck->get_result();
 $reservation = $resultCheck->fetch_assoc();
-if (!$reservation) die("Réservation introuvable ou non modifiable");
-
-// Traitement du formulaire de modification
+if (!$reservation){
+    die("Réservation introuvable ou non modifiable");
+} 
+$coach_id = $reservation['id_coach'];
+// modification selon disponibilite
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_disponibilite = $_POST['disponibilite'] ?? null;
     if ($new_disponibilite) {
@@ -64,15 +66,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Récupérer toutes les disponibilités disponibles pour modification
+// recuperer toutes les disponibilités disponibles pour modification
 $stmtDisp = $conn->prepare("
-    SELECT d.id_disponibilite, d.date, d.heure_debut, d.heure_fin, c.id_coach, p.nom AS coach_nom, p.prenom AS coach_prenom
+    SELECT 
+        d.id_disponibilite, 
+        d.date, 
+        d.heure_debut, 
+        d.heure_fin
     FROM disponibilite d
-    JOIN coach c ON d.id_coach = c.id_coach
-    JOIN personne p ON c.id_personne = p.id_personne
     WHERE d.statut = 'Disponible'
+      AND d.id_coach = ?
     ORDER BY d.date ASC, d.heure_debut ASC
 ");
+$stmtDisp->bind_param("i", $coach_id);
 $stmtDisp->execute();
 $disponibilites = $stmtDisp->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
@@ -97,7 +103,7 @@ $disponibilites = $stmtDisp->get_result()->fetch_all(MYSQLI_ASSOC);
         <?php foreach ($disponibilites as $d): ?>
             <option value="<?= $d['id_disponibilite'] ?>"
                 <?= $d['id_disponibilite'] == $reservation['id_disponibilite'] ? 'selected' : '' ?>>
-                <?= date('d/m/Y', strtotime($d['date'])) ?> | <?= date('H:i', strtotime($d['heure_debut'])) ?> - <?= date('H:i', strtotime($d['heure_fin'])) ?> | Coach: <?= htmlspecialchars($d['coach_nom'].' '.$d['coach_prenom']) ?>
+                <?= date('d/m/Y', strtotime($d['date'])) ?> | <?= date('H:i', strtotime($d['heure_debut'])) ?> - <?= date('H:i', strtotime($d['heure_fin'])) ?>
             </option>
         <?php endforeach; ?>
     </select>

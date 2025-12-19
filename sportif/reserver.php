@@ -27,41 +27,61 @@ $roleName = htmlspecialchars(strtoupper($user['nom_role']));
 
 // la réservation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_disponibilite'])) {
-    $id_disponibilite = intval($_POST['id_disponibilite']);
 
-    // recuperer l'id_coach de la disponibilité
-    $stmtDisponibilite = $conn->prepare("SELECT id_coach, date, heure_debut FROM disponibilite WHERE id_disponibilite = ?");
-    $stmtDisponibilite->bind_param("i", $id_disponibilite);
-    $stmtDisponibilite->execute();
-    $resDispo = $stmtDisponibilite->get_result()->fetch_assoc();
-    $id_coach = $resDispo['id_coach'];
+    $id_disponibilite = intval($_POST['id_disponibilite']);
     $date_reservation = date('Y-m-d H:i:s');
 
-    // Insérer la réservation
-    $stmtRes = $conn->prepare("
-        INSERT INTO reservation (date_reservation, statut, id_sportif, id_coach, id_disponibilite)
-        VALUES (?, 'en_attente', ?, ?, ?)
-    ");
-
-    // Récupérer id_sportif
+    // recuperer id_sportif
     $stmtSportif = $conn->prepare("SELECT id_sportif FROM sportif WHERE id_personne = ?");
     $stmtSportif->bind_param("i", $id_personne);
     $stmtSportif->execute();
     $id_sportif = $stmtSportif->get_result()->fetch_assoc()['id_sportif'];
 
-    $stmtRes->bind_param("siii", $date_reservation, $id_sportif, $id_coach, $id_disponibilite);
-    $stmtRes->execute();
-    $success = "Séance réservée avec succès !";
+    // recuperer l'id_coach de la disponibilité
+    $stmtDisponibilite = $conn->prepare("SELECT id_coach FROM disponibilite WHERE id_disponibilite = ?");
+    $stmtDisponibilite->bind_param("i", $id_disponibilite);
+    $stmtDisponibilite->execute();
+    $id_coach = $stmtDisponibilite->get_result()->fetch_assoc()['id_coach'];
+
+    // Vérifier si le sportif a déjà une réservation avec ce coach
+    $stmtCheckCoach = $conn->prepare("
+        SELECT id_reservation
+        FROM reservation
+        WHERE id_sportif = ?
+          AND id_coach = ?
+          AND statut IN ('en_attente', 'acceptee')
+    ");
+    $stmtCheckCoach->bind_param("ii", $id_sportif, $id_coach);
+    $stmtCheckCoach->execute();
+    $resultCheckCoach = $stmtCheckCoach->get_result();
+
+    if ($resultCheckCoach->num_rows > 0) {
+
+        $error = "Vous avez déjà une réservation avec ce coach.";
+
+    } else {
+
+        // inserer la réservation
+        $stmtRes = $conn->prepare("
+            INSERT INTO reservation 
+            (date_reservation, statut, id_sportif, id_coach, id_disponibilite)
+            VALUES (?, 'en_attente', ?, ?, ?)
+        ");
+        $stmtRes->bind_param("siii", $date_reservation, $id_sportif, $id_coach, $id_disponibilite);
+        $stmtRes->execute();
+
+        $success = "Séance réservée avec succès !";
+    }
 }
 
 // Filtre par discipline
 $filter_discipline = $_GET['discipline'] ?? '';
 $filter_date = $_GET['date'] ?? '';
 
-// Récupérer la liste des disciplines
+// recuperer la liste des disciplines
 $disciplines = $conn->query("SELECT * FROM discipline")->fetch_all(MYSQLI_ASSOC);
 
-// Récupérer la liste des coachs et leurs disponibilités
+// recuperer la liste des coachs et leurs disponibilités
 $query = "
     SELECT d.id_disponibilite, d.date, d.heure_debut, d.heure_fin, c.id_coach, c.photo as photo,
            p.nom, p.prenom, GROUP_CONCAT(dist.nom) as disciplines
@@ -115,9 +135,34 @@ $disponibilites = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 </head>
 
 <body>
+    <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <div class="flex min-h-screen">
         <?php include '../Components/aside_sportif.php'; ?>
         <main class="flex-1 lg:ml-72 p-6 md:p-10 pb-24 lg:pb-10 transition-all">
+            <?php if (!empty($error)): ?>
+                <script>
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Réservation impossible',
+                        text: '<?= htmlspecialchars($error) ?>',
+                        confirmButtonColor: '#6366f1',
+                    });
+                </script>
+            <?php endif; ?>
+
+            <?php if (!empty($success)): ?>
+                <script>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Succès',
+                        text: '<?= htmlspecialchars($success) ?>',
+                        confirmButtonColor: '#6366f1',
+                    });
+                </script>
+            <?php endif; ?>
+
+
             <h1 class="text-3xl font-bold mb-6">Réserver une séance</h1>
 
             <?php if (!empty($success)): ?>
@@ -147,7 +192,7 @@ $disponibilites = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                         <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden flex flex-col">
 
 
-                            
+
                             <div class="flex justify-center mt-12">
                                 <div class="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white shadow-lg overflow-hidden bg-slate-100">
                                     <img
@@ -198,7 +243,5 @@ $disponibilites = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             </div>
         </main>
     </div>
-    <script src="https://cdn.tailwindcss.com"></script>
 </body>
-
 </html>

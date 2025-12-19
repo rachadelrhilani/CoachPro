@@ -32,7 +32,7 @@ if (!$reservation){
     die("Réservation introuvable");
 } 
 
-/* mise à jour pour annuler */
+/* mise a jour pour annuler */
 $stmtCancel = $conn->prepare("UPDATE reservation SET statut = 'annule' WHERE id_reservation = ?");
 $stmtCancel->bind_param("i", $id_reservation);
 $stmtCancel->execute();

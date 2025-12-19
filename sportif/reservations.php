@@ -25,7 +25,7 @@ $user = $result->fetch_assoc();
 $fullName = htmlspecialchars($user['nom'] . ' ' . $user['prenom']);
 $roleName = htmlspecialchars(strtoupper($user['nom_role']));
 
-// Récupérer l'id_sportif pour l'utilisateur connecté
+// recuperer l'id de sportif connecte
 $stmtSportif = $conn->prepare("SELECT id_sportif FROM sportif WHERE id_personne = ?");
 $stmtSportif->bind_param("i", $id_personne);
 $stmtSportif->execute();
