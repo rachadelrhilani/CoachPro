@@ -85,37 +85,55 @@ $roleName = htmlspecialchars(strtoupper($user['nom_role']));
 
 <div class="flex min-h-screen">
     <?php include '../Components/aside_sportif.php'; ?>
-    <main class="flex-1 lg:ml-72 p-6 md:p-10 pb-24 lg:pb-10 transition-all">
+    <main class="flex-1 lg:ml-72 p-4 md:p-10 pb-24 lg:pb-10 transition-all">
 
-        
-        <h1 class="text-3xl font-bold mb-6">Bienvenue sur votre dashboard</h1>
+    <h1 class="text-2xl md:text-3xl font-bold mb-6">
+        Bienvenue sur votre dashboard
+    </h1>
 
+    <!-- Cartes stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-2xl shadow-md">
-                <h2 class="text-xl font-semibold mb-2">Nombre total de réservations</h2>
-                <p class="text-2xl font-bold text-indigo-600"><?= htmlspecialchars($totalReservations) ?></p>
-            </div>
-            <div class="bg-white p-6 rounded-2xl shadow-md">
-                <h2 class="text-xl font-semibold mb-2">Prochaine séance</h2>
-                <?php if ($nextSession): ?>
-                    <p class="text-indigo-600 font-bold">
-                        <?= date('d/m/Y', strtotime($nextSession['date'])) ?> à <?= date('H:i', strtotime($nextSession['heure'])) ?>
-                    </p>
-                    <p class="text-gray-500">
-                        Coach : <?= htmlspecialchars($nextSession['nom'] . ' ' . $nextSession['prenom']) ?>
-                    </p>
-                <?php else: ?>
-                    <p class="text-gray-500">Aucune séance prévue</p>
-                <?php endif; ?>
-            </div>
+        <div class="bg-white p-5 md:p-6 rounded-2xl shadow-md">
+            <h2 class="text-base md:text-xl font-semibold mb-1">
+                Nombre total de réservations
+            </h2>
+            <p class="text-2xl md:text-3xl font-bold text-indigo-600">
+                <?= htmlspecialchars($totalReservations) ?>
+            </p>
         </div>
 
+        <div class="bg-white p-5 md:p-6 rounded-2xl shadow-md">
+            <h2 class="text-base md:text-xl font-semibold mb-2">
+                Prochaine séance
+            </h2>
+
+            <?php if ($nextSession): ?>
+                <p class="text-indigo-600 font-bold text-sm md:text-base">
+                    <?= date('d/m/Y', strtotime($nextSession['date'])) ?>
+                    à <?= date('H:i', strtotime($nextSession['heure'])) ?>
+                </p>
+                <p class="text-gray-500 text-sm">
+                    Coach : <?= htmlspecialchars($nextSession['nom'] . ' ' . $nextSession['prenom']) ?>
+                </p>
+            <?php else: ?>
+                <p class="text-gray-500 text-sm">
+                    Aucune séance prévue
+                </p>
+            <?php endif; ?>
+        </div>
+
+    </div>
+
+    <!-- Table réservations -->
+    <div class="bg-white p-4 md:p-6 rounded-2xl shadow-md">
+        <h2 class="text-lg md:text-xl font-semibold mb-4">
+            Réservations récentes
+        </h2>
 
         
-        <div class="bg-white p-6 rounded-2xl shadow-md">
-            <h2 class="text-xl font-semibold mb-4">Réservations récentes</h2>
-            <table class="w-full text-left border-collapse">
+        <div class="overflow-x-auto">
+            <table class="min-w-[600px] w-full text-left border-collapse text-sm md:text-base">
                 <thead>
                     <tr>
                         <th class="border-b p-2">Date</th>
@@ -136,8 +154,9 @@ $roleName = htmlspecialchars(strtoupper($user['nom_role']));
                 </tbody>
             </table>
         </div>
+    </div>
 
-    </main>
+</main>
 </div>
 </body>
 </html>

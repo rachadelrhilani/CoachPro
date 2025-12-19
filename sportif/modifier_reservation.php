@@ -30,7 +30,9 @@ $stmtSportif = $conn->prepare("SELECT id_sportif FROM sportif WHERE id_personne 
 $stmtSportif->bind_param("i", $id_personne);
 $stmtSportif->execute();
 $resultSportif = $stmtSportif->get_result();
-if ($resultSportif->num_rows === 0) die("Sportif introuvable");
+if ($resultSportif->num_rows === 0){
+    die("Sportif introuvable");
+} 
 $id_sportif = $resultSportif->fetch_assoc()['id_sportif'];
 
 // Récupérer l'id_reservation

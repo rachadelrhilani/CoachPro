@@ -58,30 +58,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <body class="bg-gray-100">
 
-    <!-- Container principal centré -->
+    
     <div class="min-h-screen flex items-center justify-center relative overflow-hidden">
 
-        <!-- Image de fond avec overlay sombre -->
+        
         <div class="absolute inset-0">
             <img src="../images/sportback.jpg" alt="Background" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-black/50"></div>
         </div>
 
-        <!-- Card de login centrée -->
+        
         <div class="relative z-10 w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 md:p-10">
             <div class="text-center mb-8">
                 <h1 class="text-4xl font-extrabold text-gray-900 uppercase tracking-wide">CoachPro</h1>
                 <p class="mt-2 text-gray-500">Connectez-vous pour accéder à votre espace</p>
             </div>
 
-            <!-- Affichage des erreurs -->
+            
             <?php if ($error): ?>
                 <div class="mb-6 bg-red-100 text-red-700 px-4 py-3 rounded-lg text-sm">
                     <?= htmlspecialchars($error) ?>
                 </div>
             <?php endif; ?>
 
-            <!-- Formulaire -->
+            
             <form method="POST" class="space-y-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>

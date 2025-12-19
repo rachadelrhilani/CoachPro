@@ -3,9 +3,7 @@ require_once "../Connectdb/connect.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    /* =====================
-       1. Données formulaire
-    ====================== */
+    /* les donnes de formulaire*/
     $nom       = $_POST['nom'];
     $prenom    = $_POST['prenom'];
     $email     = $_POST['email'];
@@ -13,14 +11,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $role      = $_POST['role'];
     $password  = $_POST['password'];
 
-    /* =====================
-       2. Hash mot de passe
-    ====================== */
+    /* crypte mot de passe*/
     $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-    /* =====================
-       3. Récupérer id_role
-    ====================== */
+    /* recuperer id_role*/
     $stmtRole = $conn->prepare(
         "SELECT id_role FROM role WHERE nom_role = ?"
     );
@@ -34,9 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $id_role = $resultRole->fetch_assoc()['id_role'];
 
-    /* =====================
-       4. Insertion personne
-    ====================== */
+    /* Insertion personne*/
     $stmtPersonne = $conn->prepare(
         "INSERT INTO personne 
         (nom, prenom, email, mot_de_passe, telephone, id_role)
@@ -55,9 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $id_personne = $stmtPersonne->insert_id;
 
-    /* =====================
-       5. Selon le rôle
-    ====================== */
+    /*Selon le rôle*/
 
     // SPORTIF
     if ($role === "sportif") {
@@ -95,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $id_coach = $stmtCoach->insert_id;
 
-        // DISCIPLINES
+        // disciplines
         if (!empty($_POST['disciplines'])) {
             $stmtCD = $conn->prepare(
                 "INSERT INTO coach_discipline (id_coach, id_discipline)
@@ -107,7 +97,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         }
 
-        // CERTIFICATIONS
+        // certifications
         if (!empty($_POST['certifications'])) {
             $stmtCC = $conn->prepare(
                 "INSERT INTO coach_certification (id_coach, id_certification)
@@ -120,9 +110,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 
-    /* =====================
-       6. Redirection
-    ====================== */
     header("Location: login.php?success=1");
     exit;
 }
@@ -135,96 +122,114 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="min-h-screen relative flex items-center justify-center p-6 overflow-hidden">
-
-<div id="notification-container" class="fixed top-5 right-5 space-y-2 z-50"></div>
+<body class="min-h-screen relative flex items-center justify-center px-4 sm:px-6 py-6 overflow-hidden">
 
 
- <div 
-    class="absolute inset-0 bg-cover bg-center scale-110 blur-sm"
-    style="background-image: url('../images/sportback.jpg');">
-  </div>
-<div class="absolute inset-0 bg-black/60"></div>
+<div id="notification-container" class="fixed top-4 right-4 space-y-2 z-50"></div>
 
 
-<div class="relative z-10 w-full max-w-3xl max-h-[90vh] overflow-y-auto overflow-x-hidden">
-  <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8">
-  <h1 class="text-3xl font-black text-slate-800 mb-2">Créer un compte</h1>
-  <p class="text-slate-500 mb-8">Rejoignez la plateforme CoachPro</p>
+<div 
+  class="absolute inset-0 bg-cover bg-center scale-110 blur-sm"
+  style="background-image: url('../images/sportback.jpg');">
+</div>
+<div class="fixed inset-0 bg-black/60 z-0"></div>
 
-  <form action="register.php" method="POST" class="space-y-6">
+
+<div class="relative z-10 w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl">
+
+  <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-6 sm:p-8">
 
     
-    <div>
-      <label class="block text-sm font-bold text-slate-600 mb-2">Je suis</label>
-      <div class="flex gap-4">
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input type="radio" name="role" value="sportif" checked class="role-radio">
-          <span class="font-medium">Sportif</span>
-        </label>
-
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input type="radio" name="role" value="coach" class="role-radio">
-          <span class="font-medium">Coach</span>
-        </label>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <input type="text" name="nom" placeholder="Nom" required class="input">
-      <input type="text" name="prenom" placeholder="Prénom" required class="input">
-      <input type="email" name="email" placeholder="Email" required class="input">
-      <input type="text" name="telephone" placeholder="Téléphone" class="input">
-      <input type="password" name="password" placeholder="Mot de passe" required class="input md:col-span-2">
-    </div>
-
-    <div id="sportifFields" class="hidden">
-      <input type="hidden" name="date_inscription" value="<?= date('Y-m-d') ?>">
-      <p class="text-sm text-slate-500">Inscription en tant que sportif.</p>
-    </div>
-
-    <div id="coachFields" class="hidden space-y-4">
-
-      <input type="text" name="photo" placeholder="URL de la photo" class="input">
-      
-      <textarea name="biographie" rows="3" placeholder="Biographie" class="input"></textarea>
-
-      <input type="number" name="annees_experience" min="0" placeholder="Années d'expérience" class="input">
-
-      <input type="text" name="statut" placeholder="Statut (Freelance, Certifié...)" class="input">
-
-      <!-- DISCIPLINES -->
-      <div>
-        <p class="font-bold text-sm mb-2">Disciplines</p>
-        <div class="flex flex-wrap gap-3">
-          <label><input type="checkbox" name="disciplines[]" value="1"> Musculation</label>
-          <label><input type="checkbox" name="disciplines[]" value="2"> Cardio</label>
-          <label><input type="checkbox" name="disciplines[]" value="3"> Yoga</label>
-        </div>
-      </div>
-
-      <!-- CERTIFICATIONS -->
-      <div>
-        <p class="font-bold text-sm mb-2">Certifications</p>
-        <div class="flex flex-wrap gap-3">
-          <label><input type="checkbox" name="certifications[]" value="1"> CrossFit</label>
-          <label><input type="checkbox" name="certifications[]" value="2"> IFBB</label>
-        </div>
-      </div>
-    </div>
-
-    <!-- SUBMIT -->
-    <button type="submit"
-      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold transition">
-      Créer mon compte
-    </button>
-
-    <p class="text-center text-sm text-slate-500">
-      Déjà un compte ?
-      <a href="login.php" class="text-indigo-600 font-bold">Se connecter</a>
+    <h1 class="text-2xl sm:text-3xl font-black text-slate-800 mb-2 text-center sm:text-left">
+      Créer un compte
+    </h1>
+    <p class="text-slate-500 mb-6 sm:mb-8 text-center sm:text-left">
+      Rejoignez la plateforme CoachPro
     </p>
 
-  </form>
+    
+    <form action="register.php" method="POST" class="space-y-6">
+
+      
+      <div>
+        <label class="block text-sm font-bold text-slate-600 mb-2">
+          Je suis
+        </label>
+
+        <div class="flex flex-col sm:flex-row gap-3 sm:gap-6">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="role" value="sportif" checked class="role-radio">
+            <span class="font-medium">Sportif</span>
+          </label>
+
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="role" value="coach" class="role-radio">
+            <span class="font-medium">Coach</span>
+          </label>
+        </div>
+      </div>
+
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <input type="text" name="nom" placeholder="Nom" required class="input">
+        <input type="text" name="prenom" placeholder="Prénom" required class="input">
+        <input type="email" name="email" placeholder="Email" required class="input">
+        <input type="text" name="telephone" placeholder="Téléphone" class="input">
+        <input type="password" name="password" placeholder="Mot de passe" required class="input sm:col-span-2">
+      </div>
+
+      
+      <div id="sportifFields" class="hidden">
+        <input type="hidden" name="date_inscription" value="<?= date('Y-m-d') ?>">
+        <p class="text-sm text-slate-500">
+          Inscription en tant que sportif.
+        </p>
+      </div>
+
+      
+      <div id="coachFields" class="hidden space-y-4">
+
+        <input type="text" name="photo" placeholder="URL de la photo" class="input">
+
+        <textarea name="biographie" rows="3" placeholder="Biographie" class="input"></textarea>
+
+        <input type="number" name="annees_experience" min="0" placeholder="Années d'expérience" class="input">
+
+        <input type="text" name="statut" placeholder="Statut (Freelance, Certifié...)" class="input">
+
+        
+        <div>
+          <p class="font-bold text-sm mb-2">Disciplines</p>
+          <div class="flex flex-wrap gap-3 text-sm">
+            <label><input type="checkbox" name="disciplines[]" value="1"> Musculation</label>
+            <label><input type="checkbox" name="disciplines[]" value="2"> Cardio</label>
+            <label><input type="checkbox" name="disciplines[]" value="3"> Yoga</label>
+          </div>
+        </div>
+
+       
+        <div>
+          <p class="font-bold text-sm mb-2">Certifications</p>
+          <div class="flex flex-wrap gap-3 text-sm">
+            <label><input type="checkbox" name="certifications[]" value="1"> CrossFit</label>
+            <label><input type="checkbox" name="certifications[]" value="2"> IFBB</label>
+          </div>
+        </div>
+      </div>
+
+      
+      <button
+        type="submit"
+        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold transition">
+        Créer mon compte
+      </button>
+
+      <p class="text-center text-sm text-slate-500">
+        Déjà un compte ?
+        <a href="login.php" class="text-indigo-600 font-bold">Se connecter</a>
+      </p>
+
+    </form>
 </div>
 </div>
 <style>
@@ -326,6 +331,5 @@ form.addEventListener('submit', function(e) {
   }
 });
 </script>
-
 </body>
 </html>

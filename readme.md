@@ -78,7 +78,11 @@ CoachPro est une plateforme web professionnelle qui met en relation des **coachs
 │
 ├── sportif/
 │ └── dashboard.php
-│
+│ ├── profil.php
+│ ├── modifier_profil.php
+│ ├── disponibilites.php
+│ ├── modifier_reservation.php
+│ └── annuler_reservation.php
 ├── Components/
 │ ├── aside_coach.php
 │ └── aside_sportif.php

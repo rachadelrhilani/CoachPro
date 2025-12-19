@@ -104,63 +104,101 @@ if (!empty($params)) {
 $stmt->execute();
 $disponibilites = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
- ?>
+?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reserver</title>
 </head>
+
 <body>
     <div class="flex min-h-screen">
-    <?php include '../Components/aside_sportif.php'; ?>
-    <main class="flex-1 lg:ml-72 p-6 md:p-10 pb-24 lg:pb-10 transition-all">
-      <h1 class="text-3xl font-bold mb-6">Réserver une séance</h1>
+        <?php include '../Components/aside_sportif.php'; ?>
+        <main class="flex-1 lg:ml-72 p-6 md:p-10 pb-24 lg:pb-10 transition-all">
+            <h1 class="text-3xl font-bold mb-6">Réserver une séance</h1>
 
-        <?php if (!empty($success)): ?>
-            <div class="mb-4 bg-green-100 text-green-700 px-4 py-3 rounded-lg">
-                <?= htmlspecialchars($success) ?>
-            </div>
-        <?php endif; ?>
-
-        <!-- Filtres -->
-        <form method="GET" class="flex gap-4 mb-6 flex-wrap">
-            <select name="discipline" class="p-2 border rounded">
-                <option value="">Toutes les disciplines</option>
-                <?php foreach ($disciplines as $d): ?>
-                    <option value="<?= $d['nom'] ?>" <?= ($filter_discipline == $d['nom']) ? 'selected' : '' ?>><?= htmlspecialchars($d['nom']) ?></option>
-                <?php endforeach; ?>
-            </select>
-
-            <input type="date" name="date" value="<?= htmlspecialchars($filter_date) ?>" class="p-2 border rounded">
-
-            <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded">Filtrer</button>
-        </form>
-
-        <!-- Liste des créneaux -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php if ($disponibilites): ?>
-                <?php foreach ($disponibilites as $dispo): ?>
-                    <div class="bg-white p-4 rounded-2xl shadow-md">
-                        <img src="<?= htmlspecialchars($dispo['photo']) ?>" alt="photo-coach">
-                        <h2 class="font-bold text-lg mb-2"><?= htmlspecialchars($dispo['nom'] . ' ' . $dispo['prenom']) ?></h2>
-                        <p class="text-sm text-gray-500 mb-1">Disciplines : <?= htmlspecialchars($dispo['disciplines']) ?></p>
-                        <p class="text-sm text-gray-500 mb-2">Date : <?= date('d/m/Y', strtotime($dispo['date'])) ?></p>
-                        <p class="text-sm text-gray-500 mb-4">Heure : <?= date('H:i', strtotime($dispo['heure_debut'])) ?> - <?= date('H:i', strtotime($dispo['heure_fin'])) ?></p>
-                        <form method="POST">
-                            <input type="hidden" name="id_disponibilite" value="<?= $dispo['id_disponibilite'] ?>">
-                            <button type="submit" class="w-full px-4 py-2 bg-indigo-600 text-white rounded">Réserver</button>
-                        </form>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>Aucun créneau disponible pour ces filtres.</p>
+            <?php if (!empty($success)): ?>
+                <div class="mb-4 bg-green-100 text-green-700 px-4 py-3 rounded-lg">
+                    <?= htmlspecialchars($success) ?>
+                </div>
             <?php endif; ?>
-        </div>
 
-    </main>
+
+            <form method="GET" class="flex gap-4 mb-6 flex-wrap">
+                <select name="discipline" class="p-2 border rounded">
+                    <option value="">Toutes les disciplines</option>
+                    <?php foreach ($disciplines as $d): ?>
+                        <option value="<?= $d['nom'] ?>" <?= ($filter_discipline == $d['nom']) ? 'selected' : '' ?>><?= htmlspecialchars($d['nom']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+
+                <input type="date" name="date" value="<?= htmlspecialchars($filter_date) ?>" class="p-2 border rounded">
+
+                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded">Filtrer</button>
+            </form>
+
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <?php if ($disponibilites): ?>
+                    <?php foreach ($disponibilites as $dispo): ?>
+                        <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden flex flex-col">
+
+
+                            
+                            <div class="flex justify-center mt-12">
+                                <div class="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white shadow-lg overflow-hidden bg-slate-100">
+                                    <img
+                                        src="<?= htmlspecialchars($dispo['photo'] ?: '../images/default-coach.jpg') ?>"
+                                        alt="Photo coach"
+                                        class="w-full h-full object-cover">
+                                </div>
+                            </div>
+
+
+
+                            <div class="p-4 flex-1 flex flex-col">
+                                <h2 class="font-bold text-lg text-slate-800 mb-1">
+                                    <?= htmlspecialchars($dispo['nom'] . ' ' . $dispo['prenom']) ?>
+                                </h2>
+
+                                <p class="text-sm text-slate-500 mb-2 line-clamp-2">
+                                    <span class="font-medium text-slate-600">Disciplines :</span>
+                                    <?= htmlspecialchars($dispo['disciplines']) ?>
+                                </p>
+
+                                <p class="text-sm text-slate-500">
+                                    📅 <?= date('d/m/Y', strtotime($dispo['date'])) ?>
+                                </p>
+
+                                <p class="text-sm text-slate-500 mb-4">
+                                    ⏰ <?= date('H:i', strtotime($dispo['heure_debut'])) ?>
+                                    - <?= date('H:i', strtotime($dispo['heure_fin'])) ?>
+                                </p>
+
+
+                                <form method="POST" class="mt-auto">
+                                    <input type="hidden" name="id_disponibilite" value="<?= $dispo['id_disponibilite'] ?>">
+                                    <button
+                                        type="submit"
+                                        class="w-full py-2 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">
+                                        Réserver
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p class="col-span-full text-center text-slate-500">
+                        Aucun créneau disponible pour ces filtres.
+                    </p>
+                <?php endif; ?>
+            </div>
+        </main>
     </div>
     <script src="https://cdn.tailwindcss.com"></script>
 </body>
+
 </html>
