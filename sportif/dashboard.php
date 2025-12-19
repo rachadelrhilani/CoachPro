@@ -35,7 +35,7 @@ $stmtNext = $conn->prepare("
     JOIN disponibilite d ON r.id_disponibilite = d.id_disponibilite
     JOIN coach c ON r.id_coach = c.id_coach
     JOIN personne p ON c.id_personne = p.id_personne
-    WHERE r.id_sportif = ? AND d.date >= CURDATE()
+    WHERE r.id_sportif = ? AND d.date >= CURDATE() AND r.statut='confirmée'
     ORDER BY d.date ASC, d.heure_debut ASC
     LIMIT 1
 ");
@@ -50,7 +50,7 @@ $stmtRecent = $conn->prepare("
     JOIN disponibilite d ON r.id_disponibilite = d.id_disponibilite
     JOIN coach c ON r.id_coach = c.id_coach
     JOIN personne p ON c.id_personne = p.id_personne
-    WHERE r.id_sportif = ?
+    WHERE r.id_sportif = ? AND (r.statut='en_attente' OR r.statut='confirmée')
     ORDER BY d.date DESC, d.heure_debut DESC
     LIMIT 5
 ");
@@ -94,7 +94,7 @@ $roleName = htmlspecialchars(strtoupper($user['nom_role']));
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div class="bg-white p-6 rounded-2xl shadow-md">
                 <h2 class="text-xl font-semibold mb-2">Nombre total de réservations</h2>
-                <p class="text-2xl font-bold text-indigo-600"><?= $totalReservations ?></p>
+                <p class="text-2xl font-bold text-indigo-600"><?= htmlspecialchars($totalReservations) ?></p>
             </div>
             <div class="bg-white p-6 rounded-2xl shadow-md">
                 <h2 class="text-xl font-semibold mb-2">Prochaine séance</h2>
