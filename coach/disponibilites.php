@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit'])) {
 // Liste des disponibilités
 $stmt = $conn->prepare("
     SELECT * FROM disponibilite
-    WHERE id_coach = ?
+    WHERE id_coach = ? AND statut='disponible'
     ORDER BY date ASC, heure_debut ASC
 ");
 $stmt->bind_param("i", $id_coach);

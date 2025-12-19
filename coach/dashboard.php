@@ -45,7 +45,7 @@ $stmt = $conn->prepare("
     JOIN disponibilite d ON r.id_disponibilite = d.id_disponibilite
     WHERE r.id_coach = ?
     AND d.date = DATE_ADD(CURDATE(), INTERVAL 1 DAY)
-    AND r.statut = 'confirmée'
+    AND r.statut = 'confirmée' 
 ");
 $stmt->bind_param("i", $id_coach);
 $stmt->execute();
